@@ -19,12 +19,6 @@
         .tab-content { display: none; animation: fadeIn 0.3s ease-out; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes glow { 0%, 100% { box-shadow: 0 0 5px currentColor; } 50% { box-shadow: 0 0 20px currentColor; } }
-        @keyframes electronMove { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(0); opacity: 0; } }
-        .pulse { animation: pulse 0.5s ease-in-out; }
-        .glow { animation: glow 1s ease-in-out infinite; }
-        .electron-move { animation: electronMove 0.5s ease-out forwards; }
         
         /* Atom-Visualisierung */
         .atom-container {
@@ -38,8 +32,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background: linear-gradient(135deg, #f97316, #ea580c);
             display: flex;
@@ -47,7 +41,7 @@
             justify-content: center;
             font-weight: bold;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
             z-index: 10;
         }
@@ -59,14 +53,15 @@
             border: 2px dashed #cbd5e1;
             border-radius: 50%;
         }
-        .shell-1 { width: 80px; height: 80px; }
-        .shell-2 { width: 130px; height: 130px; }
-        .shell-3 { width: 180px; height: 180px; }
+        .shell-1 { width: 70px; height: 70px; }
+        .shell-2 { width: 105px; height: 105px; }
+        .shell-3 { width: 140px; height: 140px; }
+        .shell-4 { width: 175px; height: 175px; }
         
         .electron {
             position: absolute;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
@@ -77,50 +72,6 @@
             background: linear-gradient(135deg, #10b981, #059669);
             box-shadow: 0 2px 8px rgba(16, 185, 129, 0.5);
         }
-        .electron.highlight {
-            animation: glow 0.8s ease-in-out infinite;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-        
-        /* Ionen-Visualisierung */
-        .ion-box {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem 1.5rem;
-            border-radius: 1rem;
-            font-size: 2rem;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        .ion-box.cation {
-            background: linear-gradient(135deg, #fee2e2, #fecaca);
-            border: 3px solid #f87171;
-            color: #dc2626;
-        }
-        .ion-box.anion {
-            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-            border: 3px solid #60a5fa;
-            color: #2563eb;
-        }
-        .ion-charge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            font-size: 1rem;
-            background: white;
-            padding: 2px 6px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        /* Elektronentransfer Animation */
-        .transfer-arrow {
-            font-size: 2rem;
-            color: #9ca3af;
-            animation: pulse 1s ease-in-out infinite;
-        }
         
         .hint-box {
             background: linear-gradient(135deg, #fef3c7, #fde68a);
@@ -129,6 +80,20 @@
             border-radius: 8px;
             margin: 10px 0;
         }
+        
+        .option-btn {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option-btn:hover { border-color: #3b82f6; }
+        .option-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        .option-btn.correct { background: #dcfce7; border-color: #22c55e; }
+        .option-btn.wrong { background: #fee2e2; border-color: #ef4444; }
     </style>
 </head>
 <body class="pb-32 text-slate-800 bg-slate-100">
@@ -139,17 +104,17 @@
             <div class="flex items-center justify-between mb-3">
                 <h1 class="text-lg font-black text-slate-800">⚛️ IONEN MASTER</h1>
                 <div class="flex items-center gap-2">
-                    <div class="text-xs text-slate-500">Gesamt-XP:</div>
+                    <div class="text-xs text-slate-500">XP:</div>
                     <div class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-sm font-bold" id="total-xp">0</div>
                 </div>
             </div>
             
             <!-- Tab Navigation -->
-            <div class="bg-slate-200 p-1 rounded-xl flex font-bold text-xs gap-1 overflow-x-auto">
-                <button onclick="switchTab('basics')" id="btn-basics" class="flex-1 py-2 px-2 rounded-lg bg-white shadow-sm text-blue-600 transition-all tap-active whitespace-nowrap">🎯 Basics</button>
-                <button onclick="switchTab('ionen')" id="btn-ionen" class="flex-1 py-2 px-2 rounded-lg text-slate-500 transition-all tap-active whitespace-nowrap">⚡ Ionen</button>
-                <button onclick="switchTab('verbindungen')" id="btn-verbindungen" class="flex-1 py-2 px-2 rounded-lg text-slate-500 transition-all tap-active whitespace-nowrap">🧪 Salze</button>
-                <button onclick="switchTab('challenge')" id="btn-challenge" class="flex-1 py-2 px-2 rounded-lg text-slate-500 transition-all tap-active whitespace-nowrap">🏆 Challenge</button>
+            <div class="bg-slate-200 p-1 rounded-xl flex font-bold text-xs gap-1">
+                <button onclick="switchTab('basics')" id="btn-basics" class="flex-1 py-2 px-2 rounded-lg bg-white shadow-sm text-blue-600 transition-all tap-active">🎯 Basics</button>
+                <button onclick="switchTab('ionen')" id="btn-ionen" class="flex-1 py-2 px-2 rounded-lg text-slate-500 transition-all tap-active">⚡ Ionen</button>
+                <button onclick="switchTab('salze')" id="btn-salze" class="flex-1 py-2 px-2 rounded-lg text-slate-500 transition-all tap-active">🧪 Salze</button>
+                <button onclick="switchTab('challenge')" id="btn-challenge" class="flex-1 py-2 px-2 rounded-lg text-slate-500 transition-all tap-active">🏆 Quiz</button>
             </div>
         </div>
     </header>
@@ -165,65 +130,45 @@
                     <h2 class="font-bold text-slate-800 flex items-center gap-2"><span>🧩</span> Außenelektronen zuordnen</h2>
                     <button onclick="resetMatching()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded-lg tap-active">🔄 Neu</button>
                 </div>
-                <p class="text-sm text-slate-600 mb-3">Verbinde jedes Element mit seiner Anzahl an Außenelektronen!</p>
+                <p class="text-sm text-slate-600 mb-3">Verbinde Element mit Anzahl der Außenelektronen!</p>
                 <div class="grid grid-cols-2 gap-2" id="match-grid"></div>
             </section>
 
             <!-- 2. Interaktives Schalenmodell -->
             <section class="bg-white rounded-2xl shadow-sm p-4 border-l-4 border-green-500">
                 <h2 class="font-bold text-slate-800 mb-2 flex items-center gap-2"><span>⚛️</span> Schalenmodell erkunden</h2>
-                <p class="text-sm text-slate-600 mb-3">Wähle ein Element und sieh dir die Elektronenverteilung an!</p>
+                <p class="text-sm text-slate-600 mb-3">Wähle ein Element!</p>
                 
-                <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
-                    <button onclick="showAtom('Li', 3)" class="atom-btn bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-bold tap-active whitespace-nowrap">Li (3)</button>
-                    <button onclick="showAtom('O', 8)" class="atom-btn bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-xs font-bold tap-active whitespace-nowrap">O (8)</button>
-                    <button onclick="showAtom('Na', 11)" class="atom-btn bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-bold tap-active whitespace-nowrap">Na (11)</button>
-                    <button onclick="showAtom('Cl', 17)" class="atom-btn bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-xs font-bold tap-active whitespace-nowrap">Cl (17)</button>
-                    <button onclick="showAtom('Ca', 20)" class="atom-btn bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-bold tap-active whitespace-nowrap">Ca (20)</button>
+                <div class="flex gap-2 mb-4 flex-wrap">
+                    <button onclick="showAtom('Li')" class="atom-btn bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-bold tap-active">Li (3)</button>
+                    <button onclick="showAtom('O')" class="atom-btn bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-xs font-bold tap-active">O (8)</button>
+                    <button onclick="showAtom('Na')" class="atom-btn bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-bold tap-active">Na (11)</button>
+                    <button onclick="showAtom('Cl')" class="atom-btn bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-xs font-bold tap-active">Cl (17)</button>
+                    <button onclick="showAtom('K')" class="atom-btn bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-bold tap-active">K (19)</button>
+                    <button onclick="showAtom('Ca')" class="atom-btn bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-bold tap-active">Ca (20)</button>
                 </div>
                 
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                     <div class="atom-container" id="atom-visual">
-                        <div class="shell shell-1"></div>
-                        <div class="shell shell-2"></div>
-                        <div class="shell shell-3"></div>
-                        <div class="nucleus" id="nucleus-label">?</div>
+                        <div class="shell shell-1" id="shell1"></div>
+                        <div class="shell shell-2" id="shell2"></div>
+                        <div class="shell shell-3" id="shell3"></div>
+                        <div class="shell shell-4" id="shell4"></div>
+                        <div class="nucleus" id="nucleus-label">Na</div>
                         <div id="electrons-container"></div>
                     </div>
                     <div class="text-center mt-4">
                         <div class="text-sm text-slate-600">Elektronenverteilung:</div>
-                        <div class="text-xl font-bold font-mono text-slate-800" id="shell-config">Wähle ein Element</div>
-                        <div class="mt-2 text-sm"><span class="inline-block w-3 h-3 rounded-full bg-green-500 mr-1"></span> = Außenelektronen (Valenzelektronen)</div>
+                        <div class="text-xl font-bold font-mono text-slate-800" id="shell-config">2 | 8 | 1</div>
+                        <div class="mt-2 text-sm"><span class="inline-block w-3 h-3 rounded-full bg-green-500 mr-1"></span> = Außenelektronen</div>
                     </div>
                 </div>
             </section>
 
-            <!-- 3. Oktettregel verstehen -->
-            <section class="bg-slate-800 text-white rounded-2xl shadow-lg p-5 border-t-4 border-yellow-400 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500 opacity-10 blur-2xl rounded-full -mr-10 -mt-10"></div>
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="font-bold flex items-center gap-2 relative z-10"><span>👑</span> Edelgas-Ziel</h2>
-                    <span class="text-xs bg-white/10 px-2 py-1 rounded" id="oktet-score">🔥 0</span>
-                </div>
-                
-                <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 relative z-10">
-                    <div class="text-base mb-3 font-medium" id="oktet-question">Lade Aufgabe...</div>
-                    
-                    <div class="hint-box text-slate-800 text-sm mb-3">
-                        <b>💡 Oktettregel:</b> Atome streben 8 Außenelektronen an (wie Edelgase). Ausnahme: H und He streben 2 an.
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-2" id="oktet-options"></div>
-                    
-                    <div id="oktet-feedback" class="mt-3 hidden p-3 rounded-lg text-sm"></div>
-                    <button onclick="nextOktet()" id="oktet-next" class="w-full mt-3 bg-slate-600 py-2 rounded-lg font-bold hidden tap-active">Weiter ➜</button>
-                </div>
-            </section>
-
-            <!-- 4. Valenzelektronen-Quiz -->
+            <!-- 3. Valenzelektronen-Quiz -->
             <section class="bg-white rounded-2xl shadow-sm p-4 border-l-4 border-purple-500">
                 <div class="flex justify-between items-center mb-3">
-                    <h2 class="font-bold text-slate-800 flex items-center gap-2"><span>🎯</span> Valenzelektronen-Blitz</h2>
+                    <h2 class="font-bold text-slate-800 flex items-center gap-2"><span>🎯</span> Valenzelektronen-Quiz</h2>
                     <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded font-mono" id="valence-score">Richtig: 0</span>
                 </div>
                 <p class="text-sm text-slate-600 mb-3">Wie viele Außenelektronen hat das Element?</p>
@@ -237,6 +182,27 @@
                 
                 <div id="valence-feedback" class="hidden p-3 rounded-lg text-sm mb-3"></div>
                 <button onclick="nextValence()" id="valence-next" class="w-full bg-purple-200 text-purple-800 py-2 rounded-lg font-bold hidden tap-active">Weiter ➜</button>
+            </section>
+
+            <!-- 4. Edelgas-Ziel -->
+            <section class="bg-slate-800 text-white rounded-2xl shadow-lg p-5 border-t-4 border-yellow-400">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold flex items-center gap-2"><span>👑</span> Edelgas-Ziel</h2>
+                    <span class="text-xs bg-white/20 px-2 py-1 rounded" id="oktet-score">Richtig: 0</span>
+                </div>
+                
+                <div class="bg-white/10 rounded-xl p-4 border border-white/20">
+                    <div class="text-base mb-3 font-medium" id="oktet-question">Lade...</div>
+                    
+                    <div class="hint-box text-slate-800 text-sm mb-3">
+                        <b>💡 Oktettregel:</b> Atome streben 8 Außenelektronen an (wie Edelgase).
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2" id="oktet-options"></div>
+                    
+                    <div id="oktet-feedback" class="mt-3 hidden p-3 rounded-lg text-sm"></div>
+                    <button onclick="nextOktet()" id="oktet-next" class="w-full mt-3 bg-slate-600 py-2 rounded-lg font-bold hidden tap-active">Weiter ➜</button>
+                </div>
             </section>
         </div>
 
@@ -258,15 +224,15 @@
                     </div>
                     
                     <div class="grid grid-cols-2 gap-3 mb-3">
-                        <button onclick="checkIonType('kation')" class="iontype-btn p-4 rounded-xl border-2 border-red-200 bg-red-50 hover:border-red-400 tap-active transition-all">
+                        <button onclick="checkIonType('kation')" id="btn-kation" class="p-4 rounded-xl border-2 border-red-200 bg-red-50 hover:border-red-400 tap-active transition-all">
                             <div class="text-3xl mb-1">➕</div>
                             <div class="font-bold text-red-700">Kation</div>
-                            <div class="text-xs text-red-500">Elektronen abgeben</div>
+                            <div class="text-xs text-red-500">gibt e⁻ ab</div>
                         </button>
-                        <button onclick="checkIonType('anion')" class="iontype-btn p-4 rounded-xl border-2 border-blue-200 bg-blue-50 hover:border-blue-400 tap-active transition-all">
+                        <button onclick="checkIonType('anion')" id="btn-anion" class="p-4 rounded-xl border-2 border-blue-200 bg-blue-50 hover:border-blue-400 tap-active transition-all">
                             <div class="text-3xl mb-1">➖</div>
                             <div class="font-bold text-blue-700">Anion</div>
-                            <div class="text-xs text-blue-500">Elektronen aufnehmen</div>
+                            <div class="text-xs text-blue-500">nimmt e⁻ auf</div>
                         </button>
                     </div>
                     
@@ -286,7 +252,7 @@
                     
                     <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-center mb-4">
                         <div class="text-4xl font-black text-amber-800 mb-1" id="charge-element">Mg</div>
-                        <div class="text-sm text-amber-600 mb-2" id="charge-info">2 Außenelektronen → gibt 2 e⁻ ab</div>
+                        <div class="text-sm text-amber-600" id="charge-info">2 Außenelektronen → gibt 2 e⁻ ab</div>
                     </div>
                     
                     <div class="grid grid-cols-4 gap-2 mb-3" id="charge-options"></div>
@@ -303,88 +269,24 @@
                     <span class="text-xs bg-white/20 px-2 py-1 rounded font-mono" id="notation-score">Richtig: 0</span>
                 </div>
                 <div class="p-4">
-                    <p class="text-sm text-slate-600 mb-3 text-center">Schreibe das Ion in korrekter Schreibweise!</p>
+                    <p class="text-sm text-slate-600 mb-3 text-center">Wähle die richtige Schreibweise!</p>
                     
-                    <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 mb-4">
-                        <div class="text-center mb-3">
-                            <span class="text-3xl font-bold text-emerald-800" id="notation-element">Natrium</span>
-                            <span class="text-lg text-emerald-600"> wird zum Ion mit Ladung </span>
-                            <span class="text-3xl font-bold text-emerald-800" id="notation-charge">+1</span>
-                        </div>
+                    <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 mb-4 text-center">
+                        <span class="text-2xl font-bold text-emerald-800" id="notation-element">Natrium</span>
+                        <span class="text-lg text-emerald-600"> → Ion mit Ladung </span>
+                        <span class="text-2xl font-bold text-emerald-800" id="notation-charge">+1</span>
                     </div>
                     
-                    <div class="flex gap-2 mb-3 justify-center items-center">
-                        <input type="text" id="notation-answer" placeholder="z.B. Na⁺" class="w-32 h-12 text-center text-2xl font-bold bg-white border-2 border-emerald-300 rounded-xl focus:border-emerald-500 outline-none">
-                        <button onclick="checkNotation()" class="bg-emerald-600 text-white font-bold px-6 h-12 rounded-xl tap-active">OK</button>
-                    </div>
-                    
-                    <div class="hint-box text-sm">
-                        <b>Tipp:</b> Nutze ⁺ ⁻ ² ³ für die Schreibweise. Beispiele: Na⁺, Cl⁻, Mg²⁺, O²⁻
-                    </div>
-                    
-                    <div class="flex flex-wrap gap-2 justify-center mt-3 mb-3">
-                        <button onclick="insertSymbol('⁺')" class="px-3 py-1 bg-slate-200 rounded tap-active font-bold">⁺</button>
-                        <button onclick="insertSymbol('⁻')" class="px-3 py-1 bg-slate-200 rounded tap-active font-bold">⁻</button>
-                        <button onclick="insertSymbol('²')" class="px-3 py-1 bg-slate-200 rounded tap-active font-bold">²</button>
-                        <button onclick="insertSymbol('³')" class="px-3 py-1 bg-slate-200 rounded tap-active font-bold">³</button>
-                    </div>
+                    <div class="grid grid-cols-2 gap-2 mb-3" id="notation-options"></div>
                     
                     <div id="notation-feedback" class="hidden p-3 rounded-lg text-sm mb-3"></div>
                     <button onclick="nextNotation()" id="notation-next" class="w-full bg-emerald-200 text-emerald-800 py-2 rounded-lg font-bold hidden tap-active">Weiter ➜</button>
                 </div>
             </section>
-
-            <!-- 4. Elektronentransfer visualisieren -->
-            <section class="bg-white rounded-2xl shadow-sm p-4 border-l-4 border-violet-500">
-                <h2 class="font-bold text-slate-800 mb-3 flex items-center gap-2"><span>🔄</span> Elektronentransfer</h2>
-                <p class="text-sm text-slate-600 mb-3 text-center">Beobachte, wie Elektronen übertragen werden!</p>
-                
-                <div class="bg-violet-50 p-4 rounded-xl border border-violet-200">
-                    <div class="flex items-center justify-center gap-4 mb-4">
-                        <div class="text-center">
-                            <div class="ion-box" id="transfer-left">
-                                Na
-                            </div>
-                            <div class="text-xs text-slate-500 mt-2">Metall</div>
-                        </div>
-                        
-                        <div class="flex flex-col items-center">
-                            <div class="text-2xl text-violet-400" id="transfer-arrow">→</div>
-                            <div class="text-xs text-violet-600 font-bold" id="transfer-label">1 e⁻</div>
-                        </div>
-                        
-                        <div class="text-center">
-                            <div class="ion-box" id="transfer-right">
-                                Cl
-                            </div>
-                            <div class="text-xs text-slate-500 mt-2">Nichtmetall</div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-center gap-4 mb-4">
-                        <div class="text-center">
-                            <div class="ion-box cation" id="result-left">Na<span class="ion-charge">+</span></div>
-                            <div class="text-xs text-red-500 mt-2 font-bold">Kation</div>
-                        </div>
-                        <div class="text-3xl text-slate-300">+</div>
-                        <div class="text-center">
-                            <div class="ion-box anion" id="result-right">Cl<span class="ion-charge">−</span></div>
-                            <div class="text-xs text-blue-500 mt-2 font-bold">Anion</div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex gap-2 overflow-x-auto pb-2">
-                        <button onclick="showTransfer('Na', 'Cl')" class="flex-1 bg-violet-200 text-violet-800 py-2 px-3 rounded-lg font-bold tap-active text-sm whitespace-nowrap">Na + Cl</button>
-                        <button onclick="showTransfer('Mg', 'O')" class="flex-1 bg-violet-200 text-violet-800 py-2 px-3 rounded-lg font-bold tap-active text-sm whitespace-nowrap">Mg + O</button>
-                        <button onclick="showTransfer('Ca', 'Cl')" class="flex-1 bg-violet-200 text-violet-800 py-2 px-3 rounded-lg font-bold tap-active text-sm whitespace-nowrap">Ca + Cl</button>
-                        <button onclick="showTransfer('Al', 'O')" class="flex-1 bg-violet-200 text-violet-800 py-2 px-3 rounded-lg font-bold tap-active text-sm whitespace-nowrap">Al + O</button>
-                    </div>
-                </div>
-            </section>
         </div>
 
         <!-- ==================== SALZE TAB ==================== -->
-        <div id="content-verbindungen" class="tab-content space-y-6">
+        <div id="content-salze" class="tab-content space-y-6">
             
             <!-- 1. Verhältnisformel bestimmen -->
             <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -393,7 +295,7 @@
                     <span class="text-xs bg-white/20 px-2 py-1 rounded font-mono" id="formula-score">Richtig: 0</span>
                 </div>
                 <div class="p-4">
-                    <p class="text-sm text-slate-600 mb-3 text-center">Wie lautet die Verhältnisformel des Salzes?</p>
+                    <p class="text-sm text-slate-600 mb-3 text-center">Wie lautet die Formel des Salzes?</p>
                     
                     <div class="bg-pink-50 p-4 rounded-xl border border-pink-200 mb-4">
                         <div class="flex justify-center items-center gap-4 text-2xl font-bold">
@@ -412,7 +314,7 @@
                     </div>
                     
                     <div class="hint-box text-sm mb-4">
-                        <b>💡 Tipp:</b> Die Summe der Ladungen muss 0 ergeben! Kationen und Anionen müssen sich ausgleichen.
+                        <b>💡 Tipp:</b> Die Summe der Ladungen muss 0 ergeben!
                     </div>
                     
                     <div class="grid grid-cols-2 gap-2 mb-3" id="formula-options"></div>
@@ -429,25 +331,25 @@
                     <span class="text-xs bg-white/20 px-2 py-1 rounded font-mono" id="balance-score">Richtig: 0</span>
                 </div>
                 <div class="p-4">
-                    <p class="text-sm text-slate-600 mb-3 text-center">Wie viele Ionen brauchst du für ein neutrales Salz?</p>
+                    <p class="text-sm text-slate-600 mb-3 text-center">Wie viele Ionen für ein neutrales Salz?</p>
                     
                     <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 mb-4">
                         <div class="text-center mb-4">
-                            <span class="text-2xl font-bold text-indigo-800" id="balance-compound">Magnesiumchlorid</span>
+                            <span class="text-xl font-bold text-indigo-800" id="balance-compound">Magnesiumchlorid</span>
                         </div>
                         <div class="flex justify-center items-center gap-6">
                             <div class="text-center">
-                                <div class="text-3xl font-bold text-red-600" id="balance-cation-ion">Mg²⁺</div>
-                                <input type="number" id="balance-cation-count" min="1" max="9" value="1" class="w-16 h-10 text-center text-xl font-bold border-2 border-indigo-300 rounded-lg mt-2">
+                                <div class="text-2xl font-bold text-red-600" id="balance-cation-ion">Mg²⁺</div>
+                                <input type="number" id="balance-cation-count" min="1" max="9" value="1" class="w-14 h-10 text-center text-xl font-bold border-2 border-indigo-300 rounded-lg mt-2" oninput="updateBalanceTotal()">
                             </div>
                             <div class="text-2xl text-indigo-300">:</div>
                             <div class="text-center">
-                                <div class="text-3xl font-bold text-blue-600" id="balance-anion-ion">Cl⁻</div>
-                                <input type="number" id="balance-anion-count" min="1" max="9" value="1" class="w-16 h-10 text-center text-xl font-bold border-2 border-indigo-300 rounded-lg mt-2">
+                                <div class="text-2xl font-bold text-blue-600" id="balance-anion-ion">Cl⁻</div>
+                                <input type="number" id="balance-anion-count" min="1" max="9" value="1" class="w-14 h-10 text-center text-xl font-bold border-2 border-indigo-300 rounded-lg mt-2" oninput="updateBalanceTotal()">
                             </div>
                         </div>
                         <div class="text-center mt-3">
-                            <div class="text-sm text-indigo-600">Gesamtladung: <span id="balance-total" class="font-bold">+1</span></div>
+                            <div class="text-sm text-indigo-600">Gesamtladung: <span id="balance-total" class="font-bold text-red-600">+1</span></div>
                         </div>
                     </div>
                     
@@ -464,7 +366,7 @@
                     <h2 class="font-bold text-slate-800 flex items-center gap-2"><span>📝</span> Salznamen</h2>
                     <span class="text-xs bg-cyan-100 text-cyan-700 px-2 py-1 rounded font-mono" id="saltname-score">Richtig: 0</span>
                 </div>
-                <p class="text-sm text-slate-600 mb-3">Ordne die Formel dem richtigen Namen zu!</p>
+                <p class="text-sm text-slate-600 mb-3">Welcher Name gehört zur Formel?</p>
                 
                 <div class="bg-cyan-50 p-4 rounded-xl border border-cyan-200 text-center mb-4">
                     <div class="text-4xl font-bold font-mono text-cyan-800" id="saltname-formula">NaCl</div>
@@ -480,34 +382,7 @@
         <!-- ==================== CHALLENGE TAB ==================== -->
         <div id="content-challenge" class="tab-content space-y-6">
             
-            <!-- 1. Mystery Ion -->
-            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-purple-600 to-violet-600 p-3 text-white flex justify-between items-center">
-                    <h2 class="font-bold flex items-center gap-2"><span>🔮</span> Mystery Ion</h2>
-                    <span class="text-xs bg-white/20 px-2 py-1 rounded font-mono" id="mystery-score">Gelöst: 0</span>
-                </div>
-                <div class="p-4">
-                    <p class="text-sm text-slate-600 mb-3 text-center">Identifiziere das Ion anhand der Hinweise!</p>
-                    
-                    <div class="bg-purple-50 p-4 rounded-xl border border-purple-200 mb-4">
-                        <div class="text-center mb-4">
-                            <div class="w-20 h-20 bg-gradient-to-br from-purple-200 to-violet-300 rounded-2xl mx-auto flex items-center justify-center text-4xl shadow-lg">❓</div>
-                        </div>
-                        <div class="space-y-2 text-sm" id="mystery-hints">
-                            <div class="bg-white p-2 rounded-lg">🔹 Hinweis 1: ...</div>
-                            <div class="bg-white p-2 rounded-lg">🔹 Hinweis 2: ...</div>
-                            <div class="bg-white p-2 rounded-lg">🔹 Hinweis 3: ...</div>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-3 gap-2 mb-3" id="mystery-options"></div>
-                    
-                    <div id="mystery-feedback" class="hidden p-3 rounded-lg text-sm mb-3"></div>
-                    <button onclick="nextMystery()" id="mystery-next" class="w-full bg-purple-200 text-purple-800 py-2 rounded-lg font-bold hidden tap-active">Weiter ➜</button>
-                </div>
-            </section>
-
-            <!-- 2. Schnellrunde -->
+            <!-- Blitzrunde -->
             <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="bg-gradient-to-r from-orange-500 to-red-500 p-3 text-white flex justify-between items-center">
                     <h2 class="font-bold flex items-center gap-2"><span>⚡</span> Blitzrunde</h2>
@@ -517,36 +392,36 @@
                     </div>
                 </div>
                 <div class="p-4">
-                    <p class="text-sm text-slate-600 mb-3 text-center">Beantworte so viele Fragen wie möglich in 30 Sekunden!</p>
+                    <p class="text-sm text-slate-600 mb-3 text-center">Beantworte so viele Fragen wie möglich!</p>
                     
                     <div class="bg-orange-50 p-4 rounded-xl border border-orange-200 mb-4 text-center">
                         <div class="text-lg font-bold text-orange-800" id="blitz-question">Drücke Start!</div>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-2 mb-3" id="blitz-options">
+                    <div id="blitz-options" class="grid grid-cols-2 gap-2 mb-3">
                         <button onclick="startBlitz()" id="blitz-start" class="col-span-2 bg-orange-500 text-white py-3 rounded-lg font-bold tap-active text-lg">🚀 Start!</button>
                     </div>
                     
-                    <div id="blitz-feedback" class="hidden p-2 rounded-lg text-sm text-center"></div>
+                    <div id="blitz-result" class="hidden p-4 rounded-lg text-center"></div>
                 </div>
             </section>
 
-            <!-- 3. Gesamtübersicht -->
+            <!-- Fortschritt -->
             <section class="bg-white rounded-2xl shadow-sm p-4 border-l-4 border-slate-500">
                 <h2 class="font-bold text-slate-800 mb-4 flex items-center gap-2"><span>📊</span> Dein Fortschritt</h2>
                 
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-blue-50 p-3 rounded-xl text-center">
-                        <div class="text-2xl font-bold text-blue-600" id="stat-valence">0</div>
-                        <div class="text-xs text-blue-500">Valenzelektronen</div>
-                    </div>
                     <div class="bg-purple-50 p-3 rounded-xl text-center">
-                        <div class="text-2xl font-bold text-purple-600" id="stat-ions">0</div>
-                        <div class="text-xs text-purple-500">Ionen erkannt</div>
+                        <div class="text-2xl font-bold text-purple-600" id="stat-valence">0</div>
+                        <div class="text-xs text-purple-500">Valenzelektronen</div>
+                    </div>
+                    <div class="bg-amber-50 p-3 rounded-xl text-center">
+                        <div class="text-2xl font-bold text-amber-600" id="stat-ions">0</div>
+                        <div class="text-xs text-amber-500">Ionen</div>
                     </div>
                     <div class="bg-pink-50 p-3 rounded-xl text-center">
                         <div class="text-2xl font-bold text-pink-600" id="stat-formulas">0</div>
-                        <div class="text-xs text-pink-500">Formeln gelöst</div>
+                        <div class="text-xs text-pink-500">Formeln</div>
                     </div>
                     <div class="bg-orange-50 p-3 rounded-xl text-center">
                         <div class="text-2xl font-bold text-orange-600" id="stat-blitz">0</div>
@@ -560,36 +435,23 @@
 
     </main>
 
-    <!-- Toast -->
-    <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2 rounded-full shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 text-sm font-bold z-50">
-        🏆 Achievement!
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
         // ==================== DATEN ====================
         const ELEMENTS = {
-            // Hauptgruppenelemente mit Außenelektronen
-            H:  {name: 'Wasserstoff', ordnung: 1, valenz: 1, schalen: [1], ionLadung: 1, ionTyp: 'kation', symbol: 'H⁺'},
-            Li: {name: 'Lithium', ordnung: 3, valenz: 1, schalen: [2,1], ionLadung: 1, ionTyp: 'kation', symbol: 'Li⁺'},
-            Be: {name: 'Beryllium', ordnung: 4, valenz: 2, schalen: [2,2], ionLadung: 2, ionTyp: 'kation', symbol: 'Be²⁺'},
-            B:  {name: 'Bor', ordnung: 5, valenz: 3, schalen: [2,3], ionLadung: 3, ionTyp: 'kation', symbol: 'B³⁺'},
-            C:  {name: 'Kohlenstoff', ordnung: 6, valenz: 4, schalen: [2,4], ionLadung: null, ionTyp: null, symbol: null},
-            N:  {name: 'Stickstoff', ordnung: 7, valenz: 5, schalen: [2,5], ionLadung: 3, ionTyp: 'anion', symbol: 'N³⁻'},
-            O:  {name: 'Sauerstoff', ordnung: 8, valenz: 6, schalen: [2,6], ionLadung: 2, ionTyp: 'anion', symbol: 'O²⁻'},
-            F:  {name: 'Fluor', ordnung: 9, valenz: 7, schalen: [2,7], ionLadung: 1, ionTyp: 'anion', symbol: 'F⁻'},
-            Na: {name: 'Natrium', ordnung: 11, valenz: 1, schalen: [2,8,1], ionLadung: 1, ionTyp: 'kation', symbol: 'Na⁺'},
-            Mg: {name: 'Magnesium', ordnung: 12, valenz: 2, schalen: [2,8,2], ionLadung: 2, ionTyp: 'kation', symbol: 'Mg²⁺'},
-            Al: {name: 'Aluminium', ordnung: 13, valenz: 3, schalen: [2,8,3], ionLadung: 3, ionTyp: 'kation', symbol: 'Al³⁺'},
-            Si: {name: 'Silicium', ordnung: 14, valenz: 4, schalen: [2,8,4], ionLadung: null, ionTyp: null, symbol: null},
-            P:  {name: 'Phosphor', ordnung: 15, valenz: 5, schalen: [2,8,5], ionLadung: 3, ionTyp: 'anion', symbol: 'P³⁻'},
-            S:  {name: 'Schwefel', ordnung: 16, valenz: 6, schalen: [2,8,6], ionLadung: 2, ionTyp: 'anion', symbol: 'S²⁻'},
-            Cl: {name: 'Chlor', ordnung: 17, valenz: 7, schalen: [2,8,7], ionLadung: 1, ionTyp: 'anion', symbol: 'Cl⁻'},
-            K:  {name: 'Kalium', ordnung: 19, valenz: 1, schalen: [2,8,8,1], ionLadung: 1, ionTyp: 'kation', symbol: 'K⁺'},
-            Ca: {name: 'Calcium', ordnung: 20, valenz: 2, schalen: [2,8,8,2], ionLadung: 2, ionTyp: 'kation', symbol: 'Ca²⁺'},
-            Br: {name: 'Brom', ordnung: 35, valenz: 7, schalen: [2,8,18,7], ionLadung: 1, ionTyp: 'anion', symbol: 'Br⁻'},
-            I:  {name: 'Iod', ordnung: 53, valenz: 7, schalen: [2,8,18,18,7], ionLadung: 1, ionTyp: 'anion', symbol: 'I⁻'}
+            Li: {name: 'Lithium', ordnung: 3, valenz: 1, schalen: [2,1], ionTyp: 'kation', ionLadung: 1, symbol: 'Li⁺'},
+            Be: {name: 'Beryllium', ordnung: 4, valenz: 2, schalen: [2,2], ionTyp: 'kation', ionLadung: 2, symbol: 'Be²⁺'},
+            O:  {name: 'Sauerstoff', ordnung: 8, valenz: 6, schalen: [2,6], ionTyp: 'anion', ionLadung: 2, symbol: 'O²⁻'},
+            F:  {name: 'Fluor', ordnung: 9, valenz: 7, schalen: [2,7], ionTyp: 'anion', ionLadung: 1, symbol: 'F⁻'},
+            Na: {name: 'Natrium', ordnung: 11, valenz: 1, schalen: [2,8,1], ionTyp: 'kation', ionLadung: 1, symbol: 'Na⁺'},
+            Mg: {name: 'Magnesium', ordnung: 12, valenz: 2, schalen: [2,8,2], ionTyp: 'kation', ionLadung: 2, symbol: 'Mg²⁺'},
+            Al: {name: 'Aluminium', ordnung: 13, valenz: 3, schalen: [2,8,3], ionTyp: 'kation', ionLadung: 3, symbol: 'Al³⁺'},
+            S:  {name: 'Schwefel', ordnung: 16, valenz: 6, schalen: [2,8,6], ionTyp: 'anion', ionLadung: 2, symbol: 'S²⁻'},
+            Cl: {name: 'Chlor', ordnung: 17, valenz: 7, schalen: [2,8,7], ionTyp: 'anion', ionLadung: 1, symbol: 'Cl⁻'},
+            K:  {name: 'Kalium', ordnung: 19, valenz: 1, schalen: [2,8,8,1], ionTyp: 'kation', ionLadung: 1, symbol: 'K⁺'},
+            Ca: {name: 'Calcium', ordnung: 20, valenz: 2, schalen: [2,8,8,2], ionTyp: 'kation', ionLadung: 2, symbol: 'Ca²⁺'},
+            Br: {name: 'Brom', ordnung: 35, valenz: 7, schalen: [2,8,18,7], ionTyp: 'anion', ionLadung: 1, symbol: 'Br⁻'}
         };
 
         const EDELGASE = {
@@ -608,37 +470,57 @@
             {kation: 'Mg', anion: 'O', formel: 'MgO', name: 'Magnesiumoxid', kAnz: 1, aAnz: 1},
             {kation: 'Ca', anion: 'Cl', formel: 'CaCl₂', name: 'Calciumchlorid', kAnz: 1, aAnz: 2},
             {kation: 'K', anion: 'Br', formel: 'KBr', name: 'Kaliumbromid', kAnz: 1, aAnz: 1},
-            {kation: 'Al', anion: 'O', formel: 'Al₂O₃', name: 'Aluminiumoxid', kAnz: 2, aAnz: 3},
-            {kation: 'Na', anion: 'S', formel: 'Na₂S', name: 'Natriumsulfid', kAnz: 2, aAnz: 1},
-            {kation: 'Ca', anion: 'S', formel: 'CaS', name: 'Calciumsulfid', kAnz: 1, aAnz: 1},
-            {kation: 'K', anion: 'Cl', formel: 'KCl', name: 'Kaliumchlorid', kAnz: 1, aAnz: 1}
+            {kation: 'K', anion: 'Cl', formel: 'KCl', name: 'Kaliumchlorid', kAnz: 1, aAnz: 1},
+            {kation: 'Na', anion: 'S', formel: 'Na₂S', name: 'Natriumsulfid', kAnz: 2, aAnz: 1}
         ];
 
         // ==================== STATE ====================
         let state = {
             totalXP: 0,
             valenceScore: 0,
+            oktetScore: 0,
             ionTypeScore: 0,
             chargeScore: 0,
             notationScore: 0,
             formulaScore: 0,
             balanceScore: 0,
             saltnameScore: 0,
-            mysteryScore: 0,
-            blitzHighscore: 0,
-            oktetScore: 0
+            blitzHighscore: 0
         };
 
+        // Current task data
+        let currentValence = null;
+        let currentOktet = null;
+        let currentIonType = null;
+        let currentCharge = null;
+        let currentNotation = null;
+        let currentFormula = null;
+        let currentBalance = null;
+        let currentSaltname = null;
+        let matchFirst = null;
+        let matchCount = 0;
+
+        // Blitz
+        let blitzActive = false;
+        let blitzTimer = null;
+        let blitzScore = 0;
+        let blitzTime = 30;
+
+        // ==================== UTILITIES ====================
         function loadState() {
-            const saved = localStorage.getItem('ionenMasterState');
-            if (saved) {
-                state = {...state, ...JSON.parse(saved)};
-                updateAllDisplays();
-            }
+            try {
+                const saved = localStorage.getItem('ionenMasterState');
+                if (saved) {
+                    state = {...state, ...JSON.parse(saved)};
+                }
+            } catch(e) {}
+            updateAllDisplays();
         }
 
         function saveState() {
-            localStorage.setItem('ionenMasterState', JSON.stringify(state));
+            try {
+                localStorage.setItem('ionenMasterState', JSON.stringify(state));
+            } catch(e) {}
         }
 
         function addXP(amount) {
@@ -649,64 +531,67 @@
 
         function updateAllDisplays() {
             document.getElementById('total-xp').textContent = state.totalXP;
-            document.getElementById('valence-score').textContent = `Richtig: ${state.valenceScore}`;
-            document.getElementById('iontype-score').textContent = `Richtig: ${state.ionTypeScore}`;
-            document.getElementById('charge-score').textContent = `Richtig: ${state.chargeScore}`;
-            document.getElementById('notation-score').textContent = `Richtig: ${state.notationScore}`;
-            document.getElementById('formula-score').textContent = `Richtig: ${state.formulaScore}`;
-            document.getElementById('balance-score').textContent = `Richtig: ${state.balanceScore}`;
-            document.getElementById('saltname-score').textContent = `Richtig: ${state.saltnameScore}`;
-            document.getElementById('mystery-score').textContent = `Gelöst: ${state.mysteryScore}`;
-            document.getElementById('oktet-score').textContent = `🔥 ${state.oktetScore}`;
+            document.getElementById('valence-score').textContent = 'Richtig: ' + state.valenceScore;
+            document.getElementById('oktet-score').textContent = 'Richtig: ' + state.oktetScore;
+            document.getElementById('iontype-score').textContent = 'Richtig: ' + state.ionTypeScore;
+            document.getElementById('charge-score').textContent = 'Richtig: ' + state.chargeScore;
+            document.getElementById('notation-score').textContent = 'Richtig: ' + state.notationScore;
+            document.getElementById('formula-score').textContent = 'Richtig: ' + state.formulaScore;
+            document.getElementById('balance-score').textContent = 'Richtig: ' + state.balanceScore;
+            document.getElementById('saltname-score').textContent = 'Richtig: ' + state.saltnameScore;
             
-            // Stats
             document.getElementById('stat-valence').textContent = state.valenceScore;
             document.getElementById('stat-ions').textContent = state.ionTypeScore + state.chargeScore;
             document.getElementById('stat-formulas').textContent = state.formulaScore + state.balanceScore;
             document.getElementById('stat-blitz').textContent = state.blitzHighscore;
         }
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2000);
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function randomFrom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // ==================== TAB SWITCHING ====================
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('content-' + tab).classList.add('active');
+            
+            ['basics', 'ionen', 'salze', 'challenge'].forEach(t => {
+                const btn = document.getElementById('btn-' + t);
+                if (t === tab) {
+                    btn.className = "flex-1 py-2 px-2 rounded-lg bg-white shadow-sm text-blue-600 transition-all tap-active";
+                } else {
+                    btn.className = "flex-1 py-2 px-2 rounded-lg text-slate-500 transition-all tap-active";
+                }
+            });
         }
 
         // ==================== INIT ====================
         window.onload = function() {
             loadState();
-            initBasics();
-            initIonen();
-            initVerbindungen();
-            initChallenge();
+            
+            // Initialize all tasks
+            resetMatching();
+            showAtom('Na');
+            nextValence();
+            nextOktet();
+            nextIonType();
+            nextCharge();
+            nextNotation();
+            nextFormula();
+            nextBalance();
+            nextSaltname();
         };
 
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById('content-'+tab).classList.add('active');
-            
-            ['basics','ionen','verbindungen','challenge'].forEach(t => {
-                const btn = document.getElementById('btn-'+t);
-                if(t === tab) {
-                    btn.className = "flex-1 py-2 px-2 rounded-lg bg-white shadow-sm text-blue-600 transition-all tap-active whitespace-nowrap";
-                } else {
-                    btn.className = "flex-1 py-2 px-2 rounded-lg text-slate-500 transition-all tap-active whitespace-nowrap";
-                }
-            });
-        }
-
-        // ==================== BASICS ====================
-        let matchFirst = null;
-        let matchCount = 0;
-
-        function initBasics() {
-            resetMatching();
-            showAtom('Na', 11);
-            nextOktet();
-            nextValence();
-        }
-
+        // ==================== MATCHING GAME ====================
         function resetMatching() {
             const grid = document.getElementById('match-grid');
             grid.innerHTML = '';
@@ -714,189 +599,156 @@
             matchCount = 0;
             
             const pairs = [
-                {l:'Na', r:'1'},
-                {l:'Mg', r:'2'},
-                {l:'Al', r:'3'},
-                {l:'O', r:'6'},
-                {l:'Cl', r:'7'},
-                {l:'Ca', r:'2'}
+                {el: 'Na', val: '1'},
+                {el: 'Mg', val: '2'},
+                {el: 'Al', val: '3'},
+                {el: 'O', val: '6'},
+                {el: 'Cl', val: '7'},
+                {el: 'Ca', val: '2'}
             ];
             
             let items = [];
             pairs.forEach(p => {
-                items.push(createMatchBtn(p.l, p.l, 'element'));
-                items.push(createMatchBtn(p.r + ' e⁻', p.l, 'number'));
+                // Element button
+                const elBtn = document.createElement('button');
+                elBtn.className = 'bg-blue-50 p-3 rounded-xl font-bold border-2 border-blue-200 tap-active text-blue-700';
+                elBtn.textContent = p.el;
+                elBtn.dataset.match = p.el;
+                elBtn.onclick = function() { handleMatch(this); };
+                items.push(elBtn);
+                
+                // Value button
+                const valBtn = document.createElement('button');
+                valBtn.className = 'bg-green-50 p-3 rounded-xl font-bold border-2 border-green-200 tap-active text-green-700';
+                valBtn.textContent = p.val + ' e⁻';
+                valBtn.dataset.match = p.el;
+                valBtn.onclick = function() { handleMatch(this); };
+                items.push(valBtn);
             });
-            items.sort(() => Math.random() - 0.5);
-            items.forEach(i => grid.appendChild(i));
-        }
-
-        function createMatchBtn(text, val, type) {
-            const b = document.createElement('button');
-            b.className = `bg-slate-50 p-3 rounded-xl font-bold border-2 border-transparent tap-active no-select shadow-sm text-sm ${type === 'element' ? 'text-blue-700' : 'text-green-700'}`;
-            b.innerText = text;
-            b.setAttribute('data-val', val);
-            b.onclick = function() { checkMatch(this); };
-            return b;
-        }
-
-        function checkMatch(btn) {
-            if(btn.classList.contains('opacity-50') || btn === matchFirst) return;
-            btn.classList.add('ring-2', 'ring-blue-400', 'bg-blue-100');
             
-            if(!matchFirst) { 
-                matchFirst = btn; 
-                return; 
+            shuffle(items).forEach(item => grid.appendChild(item));
+        }
+
+        function handleMatch(btn) {
+            if (btn.disabled) return;
+            
+            btn.classList.add('ring-2', 'ring-blue-500');
+            
+            if (!matchFirst) {
+                matchFirst = btn;
+                return;
             }
             
-            if(matchFirst.getAttribute('data-val') === btn.getAttribute('data-val')) {
-                [btn, matchFirst].forEach(el => { 
-                    el.className = "bg-green-100 p-3 rounded-xl font-bold border-2 border-green-200 text-green-700 opacity-50 shadow-sm text-sm"; 
-                    el.innerText += ' ✓'; 
+            if (matchFirst === btn) {
+                btn.classList.remove('ring-2', 'ring-blue-500');
+                matchFirst = null;
+                return;
+            }
+            
+            if (matchFirst.dataset.match === btn.dataset.match) {
+                // Correct match
+                [matchFirst, btn].forEach(b => {
+                    b.classList.remove('ring-2', 'ring-blue-500');
+                    b.classList.add('bg-green-200', 'border-green-400', 'opacity-60');
+                    b.disabled = true;
                 });
                 matchCount++;
                 addXP(5);
-                if(matchCount === 6) {
-                    showToast('🎯 Alle Paare gefunden!');
+                
+                if (matchCount === 6) {
                     addXP(20);
+                    confetti({particleCount: 30, spread: 60});
                 }
             } else {
-                [btn, matchFirst].forEach(el => el.classList.add('bg-red-100'));
-                setTimeout(() => { 
-                    [btn, matchFirst].forEach(el => el.classList.remove('ring-2', 'ring-blue-400', 'bg-blue-100', 'bg-red-100')); 
-                    matchFirst = null; 
+                // Wrong match
+                [matchFirst, btn].forEach(b => {
+                    b.classList.add('bg-red-100', 'border-red-300');
+                });
+                setTimeout(() => {
+                    [matchFirst, btn].forEach(b => {
+                        b.classList.remove('ring-2', 'ring-blue-500', 'bg-red-100', 'border-red-300');
+                    });
+                    matchFirst = null;
                 }, 500);
                 return;
             }
+            
             matchFirst = null;
         }
 
-        // Schalenmodell
-        function showAtom(symbol, ordnung) {
+        // ==================== ATOM VISUALIZATION ====================
+        function showAtom(symbol) {
             const el = ELEMENTS[symbol];
-            if(!el) return;
+            if (!el) return;
             
             document.getElementById('nucleus-label').textContent = symbol;
             document.getElementById('shell-config').textContent = el.schalen.join(' | ');
             
-            // Highlight button
-            document.querySelectorAll('.atom-btn').forEach(btn => {
-                btn.classList.remove('ring-2', 'ring-offset-2', 'ring-blue-500');
-            });
-            event.target.classList.add('ring-2', 'ring-offset-2', 'ring-blue-500');
+            // Show/hide shells
+            const numShells = el.schalen.length;
+            document.getElementById('shell1').style.display = numShells >= 1 ? 'block' : 'none';
+            document.getElementById('shell2').style.display = numShells >= 2 ? 'block' : 'none';
+            document.getElementById('shell3').style.display = numShells >= 3 ? 'block' : 'none';
+            document.getElementById('shell4').style.display = numShells >= 4 ? 'block' : 'none';
             
             // Draw electrons
             const container = document.getElementById('electrons-container');
             container.innerHTML = '';
             
-            const shellRadii = [40, 65, 90];
+            const radii = [35, 52.5, 70, 87.5];
             
-            el.schalen.forEach((count, shellIndex) => {
-                if(shellIndex > 2) return;
-                const radius = shellRadii[shellIndex];
-                const isOuterShell = shellIndex === el.schalen.length - 1;
+            el.schalen.forEach((count, shellIdx) => {
+                const radius = radii[shellIdx];
+                const isOuter = shellIdx === el.schalen.length - 1;
                 
-                for(let i = 0; i < count; i++) {
-                    const angle = (2 * Math.PI * i / count) - Math.PI/2;
+                for (let i = 0; i < count; i++) {
+                    const angle = (2 * Math.PI * i / count) - Math.PI / 2;
                     const x = 100 + radius * Math.cos(angle);
                     const y = 100 + radius * Math.sin(angle);
                     
                     const electron = document.createElement('div');
-                    electron.className = `electron ${isOuterShell ? 'valence' : ''}`;
+                    electron.className = 'electron' + (isOuter ? ' valence' : '');
                     electron.style.left = x + 'px';
                     electron.style.top = y + 'px';
                     container.appendChild(electron);
                 }
             });
+            
+            // Highlight active button
+            document.querySelectorAll('.atom-btn').forEach(b => b.classList.remove('ring-2', 'ring-blue-500'));
         }
 
-        // Oktettregel
-        let oktetCurr = {};
-        function nextOktet() {
-            document.getElementById('oktet-feedback').classList.add('hidden');
-            document.getElementById('oktet-next').classList.add('hidden');
-            
-            const elements = ['Li', 'Na', 'K', 'Mg', 'Ca', 'Al', 'O', 'S', 'F', 'Cl', 'Br'];
-            const symbol = elements[Math.floor(Math.random() * elements.length)];
-            const el = ELEMENTS[symbol];
-            
-            const edelgasZiele = {
-                'Li': 'He', 'Na': 'Ne', 'K': 'Ar', 'Mg': 'Ne', 'Ca': 'Ar',
-                'Al': 'Ne', 'O': 'Ne', 'S': 'Ar', 'F': 'Ne', 'Cl': 'Ar', 'Br': 'Kr'
-            };
-            
-            const correct = edelgasZiele[symbol];
-            oktetCurr = {correct, symbol};
-            
-            document.getElementById('oktet-question').innerHTML = `<b>${el.name} (${symbol})</b> hat ${el.valenz} Außenelektronen.<br>Welche Edelgaskonfiguration strebt es an?`;
-            
-            const options = document.getElementById('oktet-options');
-            options.innerHTML = '';
-            
-            const choices = ['He', 'Ne', 'Ar', 'Kr'].sort(() => Math.random() - 0.5);
-            choices.forEach(choice => {
-                const btn = document.createElement('button');
-                btn.className = 'oktet-opt bg-white/20 hover:bg-white/30 p-3 rounded-lg font-bold tap-active transition-all';
-                btn.innerHTML = `${choice} <span class="text-xs opacity-70">(${EDELGASE[choice].elektronen} e⁻)</span>`;
-                btn.onclick = () => checkOktet(choice, btn);
-                options.appendChild(btn);
-            });
-        }
-
-        function checkOktet(choice, btn) {
-            const fb = document.getElementById('oktet-feedback');
-            fb.classList.remove('hidden', 'bg-green-500/20', 'bg-red-500/20', 'text-green-300', 'text-red-300');
-            
-            document.querySelectorAll('.oktet-opt').forEach(b => b.disabled = true);
-            
-            if(choice === oktetCurr.correct) {
-                fb.classList.add('bg-green-500/20', 'text-green-300');
-                fb.innerHTML = `✅ Richtig! ${oktetCurr.symbol} strebt die ${choice}-Konfiguration an.`;
-                btn.classList.add('bg-green-500/30', 'ring-2', 'ring-green-400');
-                state.oktetScore++;
-                addXP(10);
-                confetti({particleCount: 20, spread: 40});
-            } else {
-                fb.classList.add('bg-red-500/20', 'text-red-300');
-                fb.innerHTML = `❌ Nicht ganz. ${oktetCurr.symbol} strebt ${oktetCurr.correct} an.`;
-                btn.classList.add('bg-red-500/30');
-            }
-            
-            updateAllDisplays();
-            document.getElementById('oktet-next').classList.remove('hidden');
-        }
-
-        // Valenzelektronen-Quiz
-        let valenceCurr = {};
+        // ==================== VALENCE QUIZ ====================
         function nextValence() {
             document.getElementById('valence-feedback').classList.add('hidden');
             document.getElementById('valence-next').classList.add('hidden');
             
-            const elements = Object.keys(ELEMENTS).filter(e => ELEMENTS[e].valenz !== null);
-            const symbol = elements[Math.floor(Math.random() * elements.length)];
+            const symbols = Object.keys(ELEMENTS);
+            const symbol = randomFrom(symbols);
             const el = ELEMENTS[symbol];
             
-            valenceCurr = {correct: el.valenz, symbol};
+            currentValence = {symbol: symbol, correct: el.valenz};
             
             document.getElementById('valence-element').textContent = symbol;
-            document.getElementById('valence-info').textContent = `Ordnungszahl: ${el.ordnung}`;
+            document.getElementById('valence-info').textContent = 'Ordnungszahl: ' + el.ordnung;
             
-            const options = document.getElementById('valence-options');
-            options.innerHTML = '';
-            
-            let choices = [el.valenz];
-            while(choices.length < 4) {
-                const rand = Math.floor(Math.random() * 8) + 1;
-                if(!choices.includes(rand)) choices.push(rand);
+            // Generate options
+            let options = [el.valenz];
+            while (options.length < 4) {
+                const rand = Math.floor(Math.random() * 7) + 1;
+                if (!options.includes(rand)) options.push(rand);
             }
-            choices.sort(() => Math.random() - 0.5);
+            options = shuffle(options);
             
-            choices.forEach(choice => {
+            const container = document.getElementById('valence-options');
+            container.innerHTML = '';
+            
+            options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'valence-opt bg-white border-2 border-purple-200 hover:border-purple-400 p-3 rounded-xl font-bold text-xl tap-active transition-all';
-                btn.textContent = choice;
-                btn.onclick = () => checkValence(choice, btn);
-                options.appendChild(btn);
+                btn.className = 'option-btn text-xl';
+                btn.textContent = opt;
+                btn.onclick = function() { checkValence(opt, this); };
+                container.appendChild(btn);
             });
         }
 
@@ -904,115 +756,164 @@
             const fb = document.getElementById('valence-feedback');
             fb.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'text-green-800', 'text-red-800');
             
-            document.querySelectorAll('.valence-opt').forEach(b => b.disabled = true);
+            document.querySelectorAll('#valence-options button').forEach(b => b.disabled = true);
             
-            if(choice === valenceCurr.correct) {
+            if (choice === currentValence.correct) {
                 fb.classList.add('bg-green-100', 'text-green-800');
-                fb.innerHTML = `✅ Richtig! ${valenceCurr.symbol} hat ${choice} Außenelektron${choice > 1 ? 'en' : ''}.`;
-                btn.classList.add('border-green-500', 'bg-green-50');
+                fb.textContent = '✅ Richtig! ' + currentValence.symbol + ' hat ' + choice + ' Außenelektron' + (choice > 1 ? 'en' : '') + '.';
+                btn.classList.add('correct');
                 state.valenceScore++;
                 addXP(10);
             } else {
                 fb.classList.add('bg-red-100', 'text-red-800');
-                fb.innerHTML = `❌ Falsch. ${valenceCurr.symbol} hat ${valenceCurr.correct} Außenelektronen.`;
-                btn.classList.add('border-red-500', 'bg-red-50');
+                fb.textContent = '❌ Falsch. Richtig: ' + currentValence.correct;
+                btn.classList.add('wrong');
             }
             
             updateAllDisplays();
             document.getElementById('valence-next').classList.remove('hidden');
         }
 
-        // ==================== IONEN ====================
-        let ionTypeCurr = {};
-        let chargeCurr = {};
-        let notationCurr = {};
-
-        function initIonen() {
-            nextIonType();
-            nextCharge();
-            nextNotation();
-            showTransfer('Na', 'Cl');
+        // ==================== OKTET QUIZ ====================
+        function nextOktet() {
+            document.getElementById('oktet-feedback').classList.add('hidden');
+            document.getElementById('oktet-next').classList.add('hidden');
+            
+            const edelgasMap = {
+                'Li': 'He', 'Na': 'Ne', 'K': 'Ar', 'Mg': 'Ne', 'Ca': 'Ar',
+                'Al': 'Ne', 'O': 'Ne', 'S': 'Ar', 'F': 'Ne', 'Cl': 'Ar', 'Br': 'Kr'
+            };
+            
+            const symbols = Object.keys(edelgasMap);
+            const symbol = randomFrom(symbols);
+            const el = ELEMENTS[symbol];
+            const correct = edelgasMap[symbol];
+            
+            currentOktet = {symbol: symbol, correct: correct};
+            
+            document.getElementById('oktet-question').innerHTML = '<b>' + el.name + ' (' + symbol + ')</b> hat ' + el.valenz + ' Außenelektronen.<br>Welche Edelgaskonfiguration strebt es an?';
+            
+            const options = shuffle(['He', 'Ne', 'Ar', 'Kr']);
+            const container = document.getElementById('oktet-options');
+            container.innerHTML = '';
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-white/20 hover:bg-white/30 p-3 rounded-lg font-bold tap-active';
+                btn.innerHTML = opt + ' <span class="text-xs opacity-70">(' + EDELGASE[opt].elektronen + ' e⁻)</span>';
+                btn.onclick = function() { checkOktet(opt, this); };
+                container.appendChild(btn);
+            });
         }
 
-        // Kation oder Anion
+        function checkOktet(choice, btn) {
+            const fb = document.getElementById('oktet-feedback');
+            fb.classList.remove('hidden', 'bg-green-500/30', 'bg-red-500/30', 'text-green-200', 'text-red-200');
+            
+            document.querySelectorAll('#oktet-options button').forEach(b => b.disabled = true);
+            
+            if (choice === currentOktet.correct) {
+                fb.classList.add('bg-green-500/30', 'text-green-200');
+                fb.textContent = '✅ Richtig! ' + currentOktet.symbol + ' strebt ' + choice + ' an.';
+                btn.classList.add('bg-green-500/40', 'ring-2', 'ring-green-400');
+                state.oktetScore++;
+                addXP(10);
+                confetti({particleCount: 20, spread: 40});
+            } else {
+                fb.classList.add('bg-red-500/30', 'text-red-200');
+                fb.textContent = '❌ Falsch. Richtig: ' + currentOktet.correct;
+                btn.classList.add('bg-red-500/40');
+            }
+            
+            updateAllDisplays();
+            document.getElementById('oktet-next').classList.remove('hidden');
+        }
+
+        // ==================== ION TYPE ====================
         function nextIonType() {
             document.getElementById('iontype-feedback').classList.add('hidden');
             document.getElementById('iontype-next').classList.add('hidden');
-            document.querySelectorAll('.iontype-btn').forEach(b => {
-                b.disabled = false;
-                b.classList.remove('ring-4', 'ring-green-400', 'ring-red-400');
-            });
+            document.getElementById('btn-kation').disabled = false;
+            document.getElementById('btn-anion').disabled = false;
+            document.getElementById('btn-kation').classList.remove('ring-4', 'ring-green-400', 'ring-red-400');
+            document.getElementById('btn-anion').classList.remove('ring-4', 'ring-green-400', 'ring-red-400');
             
-            const elements = Object.keys(ELEMENTS).filter(e => ELEMENTS[e].ionTyp !== null);
-            const symbol = elements[Math.floor(Math.random() * elements.length)];
+            const symbols = Object.keys(ELEMENTS);
+            const symbol = randomFrom(symbols);
             const el = ELEMENTS[symbol];
             
-            ionTypeCurr = {correct: el.ionTyp, symbol, valenz: el.valenz};
+            currentIonType = {symbol: symbol, correct: el.ionTyp, valenz: el.valenz};
             
             document.getElementById('iontype-element').textContent = symbol;
-            document.getElementById('iontype-info').textContent = `${el.valenz} Außenelektron${el.valenz > 1 ? 'en' : ''}`;
+            document.getElementById('iontype-info').textContent = el.valenz + ' Außenelektron' + (el.valenz > 1 ? 'en' : '');
         }
 
         function checkIonType(choice) {
             const fb = document.getElementById('iontype-feedback');
             fb.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'text-green-800', 'text-red-800');
             
-            document.querySelectorAll('.iontype-btn').forEach(b => b.disabled = true);
+            document.getElementById('btn-kation').disabled = true;
+            document.getElementById('btn-anion').disabled = true;
             
-            const el = ELEMENTS[ionTypeCurr.symbol];
+            const el = ELEMENTS[currentIonType.symbol];
             
-            if(choice === ionTypeCurr.correct) {
+            if (choice === currentIonType.correct) {
                 fb.classList.add('bg-green-100', 'text-green-800');
-                if(choice === 'kation') {
-                    fb.innerHTML = `✅ Richtig! ${ionTypeCurr.symbol} gibt ${el.valenz} e⁻ ab → Kation (${el.symbol})`;
+                if (choice === 'kation') {
+                    fb.textContent = '✅ Richtig! ' + currentIonType.symbol + ' gibt ' + el.valenz + ' e⁻ ab → ' + el.symbol;
                 } else {
-                    fb.innerHTML = `✅ Richtig! ${ionTypeCurr.symbol} nimmt ${8 - el.valenz} e⁻ auf → Anion (${el.symbol})`;
+                    fb.textContent = '✅ Richtig! ' + currentIonType.symbol + ' nimmt ' + (8 - el.valenz) + ' e⁻ auf → ' + el.symbol;
                 }
+                document.getElementById('btn-' + choice).classList.add('ring-4', 'ring-green-400');
                 state.ionTypeScore++;
                 addXP(10);
                 confetti({particleCount: 15, spread: 30});
             } else {
                 fb.classList.add('bg-red-100', 'text-red-800');
-                fb.innerHTML = `❌ Falsch. ${ionTypeCurr.symbol} wird zum ${ionTypeCurr.correct === 'kation' ? 'Kation (+)' : 'Anion (−)'}.`;
+                fb.textContent = '❌ Falsch. ' + currentIonType.symbol + ' wird zum ' + (currentIonType.correct === 'kation' ? 'Kation (+)' : 'Anion (−)');
+                document.getElementById('btn-' + choice).classList.add('ring-4', 'ring-red-400');
             }
             
             updateAllDisplays();
             document.getElementById('iontype-next').classList.remove('hidden');
         }
 
-        // Ionenladung
+        // ==================== CHARGE ====================
         function nextCharge() {
             document.getElementById('charge-feedback').classList.add('hidden');
             document.getElementById('charge-next').classList.add('hidden');
             
-            const elements = Object.keys(ELEMENTS).filter(e => ELEMENTS[e].ionLadung !== null);
-            const symbol = elements[Math.floor(Math.random() * elements.length)];
+            const symbols = Object.keys(ELEMENTS);
+            const symbol = randomFrom(symbols);
             const el = ELEMENTS[symbol];
             
-            chargeCurr = {correct: el.ionTyp === 'kation' ? `+${el.ionLadung}` : `-${el.ionLadung}`, symbol};
+            const correctCharge = el.ionTyp === 'kation' ? '+' + el.ionLadung : '-' + el.ionLadung;
+            currentCharge = {symbol: symbol, correct: correctCharge};
             
             document.getElementById('charge-element').textContent = symbol;
-            if(el.ionTyp === 'kation') {
-                document.getElementById('charge-info').textContent = `${el.valenz} Außenelektron${el.valenz > 1 ? 'en' : ''} → gibt ${el.ionLadung} e⁻ ab`;
+            if (el.ionTyp === 'kation') {
+                document.getElementById('charge-info').textContent = el.valenz + ' Außenelektronen → gibt ' + el.ionLadung + ' e⁻ ab';
             } else {
-                document.getElementById('charge-info').textContent = `${el.valenz} Außenelektronen → nimmt ${el.ionLadung} e⁻ auf`;
+                document.getElementById('charge-info').textContent = el.valenz + ' Außenelektronen → nimmt ' + el.ionLadung + ' e⁻ auf';
             }
             
-            const options = document.getElementById('charge-options');
-            options.innerHTML = '';
-            
-            const choices = ['+1', '+2', '+3', '-1', '-2', '-3'].sort(() => Math.random() - 0.5).slice(0, 4);
-            if(!choices.includes(chargeCurr.correct)) {
-                choices[0] = chargeCurr.correct;
-                choices.sort(() => Math.random() - 0.5);
+            let options = [correctCharge];
+            const allCharges = ['+1', '+2', '+3', '-1', '-2', '-3'];
+            while (options.length < 4) {
+                const rand = randomFrom(allCharges);
+                if (!options.includes(rand)) options.push(rand);
             }
+            options = shuffle(options);
             
-            choices.forEach(choice => {
+            const container = document.getElementById('charge-options');
+            container.innerHTML = '';
+            
+            options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = `charge-opt p-3 rounded-xl font-bold text-lg tap-active transition-all border-2 ${choice.startsWith('+') ? 'bg-red-50 border-red-200 text-red-700' : 'bg-blue-50 border-blue-200 text-blue-700'}`;
-                btn.textContent = choice;
-                btn.onclick = () => checkCharge(choice, btn);
-                options.appendChild(btn);
+                btn.className = 'option-btn text-lg ' + (opt.startsWith('+') ? 'text-red-600' : 'text-blue-600');
+                btn.textContent = opt;
+                btn.onclick = function() { checkCharge(opt, this); };
+                container.appendChild(btn);
             });
         }
 
@@ -1020,152 +921,115 @@
             const fb = document.getElementById('charge-feedback');
             fb.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'text-green-800', 'text-red-800');
             
-            document.querySelectorAll('.charge-opt').forEach(b => b.disabled = true);
+            document.querySelectorAll('#charge-options button').forEach(b => b.disabled = true);
             
-            if(choice === chargeCurr.correct) {
+            if (choice === currentCharge.correct) {
                 fb.classList.add('bg-green-100', 'text-green-800');
-                fb.innerHTML = `✅ Richtig! ${chargeCurr.symbol} wird zu ${ELEMENTS[chargeCurr.symbol].symbol}`;
-                btn.classList.add('ring-2', 'ring-green-500');
+                fb.textContent = '✅ Richtig! ' + currentCharge.symbol + ' wird zu ' + ELEMENTS[currentCharge.symbol].symbol;
+                btn.classList.add('correct');
                 state.chargeScore++;
                 addXP(10);
             } else {
                 fb.classList.add('bg-red-100', 'text-red-800');
-                fb.innerHTML = `❌ Falsch. Die Ladung ist ${chargeCurr.correct}.`;
-                btn.classList.add('ring-2', 'ring-red-500');
+                fb.textContent = '❌ Falsch. Richtige Ladung: ' + currentCharge.correct;
+                btn.classList.add('wrong');
             }
             
             updateAllDisplays();
             document.getElementById('charge-next').classList.remove('hidden');
         }
 
-        // Ionenschreibweise
+        // ==================== NOTATION ====================
         function nextNotation() {
             document.getElementById('notation-feedback').classList.add('hidden');
             document.getElementById('notation-next').classList.add('hidden');
-            document.getElementById('notation-answer').value = '';
-            document.getElementById('notation-answer').disabled = false;
             
-            const elements = Object.keys(ELEMENTS).filter(e => ELEMENTS[e].symbol !== null);
-            const symbol = elements[Math.floor(Math.random() * elements.length)];
+            const symbols = Object.keys(ELEMENTS);
+            const symbol = randomFrom(symbols);
             const el = ELEMENTS[symbol];
             
-            const ladungText = el.ionTyp === 'kation' ? `+${el.ionLadung}` : `-${el.ionLadung}`;
-            
-            notationCurr = {correct: el.symbol, symbol, alternatives: generateAlternatives(symbol, el)};
+            const ladungText = el.ionTyp === 'kation' ? '+' + el.ionLadung : '-' + el.ionLadung;
+            currentNotation = {symbol: symbol, correct: el.symbol, name: el.name};
             
             document.getElementById('notation-element').textContent = el.name;
             document.getElementById('notation-charge').textContent = ladungText;
-        }
-
-        function generateAlternatives(symbol, el) {
-            const alts = [el.symbol];
-            // Add common alternative notations
-            if(el.ionTyp === 'kation') {
-                if(el.ionLadung === 1) alts.push(symbol + '+', symbol + '⁺', symbol + '1+');
-                if(el.ionLadung === 2) alts.push(symbol + '2+', symbol + '²⁺');
-                if(el.ionLadung === 3) alts.push(symbol + '3+', symbol + '³⁺');
-            } else {
-                if(el.ionLadung === 1) alts.push(symbol + '-', symbol + '⁻', symbol + '1-');
-                if(el.ionLadung === 2) alts.push(symbol + '2-', symbol + '²⁻');
-                if(el.ionLadung === 3) alts.push(symbol + '3-', symbol + '³⁻');
-            }
-            return alts;
-        }
-
-        function insertSymbol(sym) {
-            const input = document.getElementById('notation-answer');
-            input.value += sym;
-            input.focus();
-        }
-
-        function checkNotation() {
-            const answer = document.getElementById('notation-answer').value.trim();
-            if(!answer) return;
             
+            // Generate options
+            let options = [el.symbol];
+            const allSymbols = Object.values(ELEMENTS).map(e => e.symbol);
+            while (options.length < 4) {
+                const rand = randomFrom(allSymbols);
+                if (!options.includes(rand)) options.push(rand);
+            }
+            options = shuffle(options);
+            
+            const container = document.getElementById('notation-options');
+            container.innerHTML = '';
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn text-xl font-mono';
+                btn.textContent = opt;
+                btn.onclick = function() { checkNotation(opt, this); };
+                container.appendChild(btn);
+            });
+        }
+
+        function checkNotation(choice, btn) {
             const fb = document.getElementById('notation-feedback');
             fb.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'text-green-800', 'text-red-800');
             
-            if(notationCurr.alternatives.includes(answer)) {
+            document.querySelectorAll('#notation-options button').forEach(b => b.disabled = true);
+            
+            if (choice === currentNotation.correct) {
                 fb.classList.add('bg-green-100', 'text-green-800');
-                fb.innerHTML = `✅ Richtig! Die korrekte Schreibweise ist ${notationCurr.correct}`;
+                fb.textContent = '✅ Richtig! ' + currentNotation.name + ' → ' + currentNotation.correct;
+                btn.classList.add('correct');
                 state.notationScore++;
                 addXP(15);
                 confetti({particleCount: 20, spread: 40});
             } else {
                 fb.classList.add('bg-red-100', 'text-red-800');
-                fb.innerHTML = `❌ Nicht ganz. Richtig wäre: ${notationCurr.correct}`;
+                fb.textContent = '❌ Falsch. Richtig: ' + currentNotation.correct;
+                btn.classList.add('wrong');
             }
             
-            document.getElementById('notation-answer').disabled = true;
             updateAllDisplays();
             document.getElementById('notation-next').classList.remove('hidden');
         }
 
-        // Elektronentransfer
-        function showTransfer(metal, nonmetal) {
-            const m = ELEMENTS[metal];
-            const nm = ELEMENTS[nonmetal];
-            
-            document.getElementById('transfer-left').textContent = metal;
-            document.getElementById('transfer-right').textContent = nonmetal;
-            
-            const electrons = m.ionLadung;
-            document.getElementById('transfer-label').textContent = `${electrons} e⁻`;
-            
-            document.getElementById('result-left').innerHTML = `${metal}<span class="ion-charge">${m.ionLadung}+</span>`;
-            document.getElementById('result-right').innerHTML = `${nonmetal}<span class="ion-charge">${nm.ionLadung}−</span>`;
-        }
-
-        // ==================== VERBINDUNGEN ====================
-        let formulaCurr = {};
-        let balanceCurr = {};
-        let saltnameCurr = {};
-
-        function initVerbindungen() {
-            nextFormula();
-            nextBalance();
-            nextSaltname();
-            
-            // Balance listener
-            document.getElementById('balance-cation-count').addEventListener('input', updateBalanceTotal);
-            document.getElementById('balance-anion-count').addEventListener('input', updateBalanceTotal);
-        }
-
-        // Verhältnisformel
+        // ==================== FORMULA ====================
         function nextFormula() {
             document.getElementById('formula-feedback').classList.add('hidden');
             document.getElementById('formula-next').classList.add('hidden');
             
-            const salz = SALZE[Math.floor(Math.random() * SALZE.length)];
-            formulaCurr = {correct: salz.formel, salz};
-            
+            const salz = randomFrom(SALZE);
             const kEl = ELEMENTS[salz.kation];
             const aEl = ELEMENTS[salz.anion];
+            
+            currentFormula = {correct: salz.formel, name: salz.name};
             
             document.getElementById('formula-cation').textContent = kEl.symbol;
             document.getElementById('formula-anion').textContent = aEl.symbol;
             
-            const options = document.getElementById('formula-options');
-            options.innerHTML = '';
-            
-            // Generate wrong options
-            let choices = [salz.formel];
-            const wrongFormulas = SALZE.filter(s => s.formel !== salz.formel).map(s => s.formel);
-            while(choices.length < 4 && wrongFormulas.length > 0) {
-                const idx = Math.floor(Math.random() * wrongFormulas.length);
-                if(!choices.includes(wrongFormulas[idx])) {
-                    choices.push(wrongFormulas[idx]);
-                }
-                wrongFormulas.splice(idx, 1);
+            // Generate options
+            let options = [salz.formel];
+            const allFormulas = SALZE.map(s => s.formel);
+            while (options.length < 4) {
+                const rand = randomFrom(allFormulas);
+                if (!options.includes(rand)) options.push(rand);
             }
-            choices.sort(() => Math.random() - 0.5);
+            options = shuffle(options);
             
-            choices.forEach(choice => {
+            const container = document.getElementById('formula-options');
+            container.innerHTML = '';
+            
+            options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'formula-opt bg-white border-2 border-pink-200 hover:border-pink-400 p-3 rounded-xl font-bold text-lg font-mono tap-active transition-all';
-                btn.textContent = choice;
-                btn.onclick = () => checkFormula(choice, btn);
-                options.appendChild(btn);
+                btn.className = 'option-btn text-xl font-mono';
+                btn.textContent = opt;
+                btn.onclick = function() { checkFormula(opt, this); };
+                container.appendChild(btn);
             });
         }
 
@@ -1173,35 +1037,41 @@
             const fb = document.getElementById('formula-feedback');
             fb.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'text-green-800', 'text-red-800');
             
-            document.querySelectorAll('.formula-opt').forEach(b => b.disabled = true);
+            document.querySelectorAll('#formula-options button').forEach(b => b.disabled = true);
             
-            if(choice === formulaCurr.correct) {
+            if (choice === currentFormula.correct) {
                 fb.classList.add('bg-green-100', 'text-green-800');
-                fb.innerHTML = `✅ Richtig! ${formulaCurr.salz.name} hat die Formel ${formulaCurr.correct}`;
-                btn.classList.add('border-green-500', 'bg-green-50');
+                fb.textContent = '✅ Richtig! ' + currentFormula.name + ' = ' + currentFormula.correct;
+                btn.classList.add('correct');
                 state.formulaScore++;
                 addXP(15);
                 confetti({particleCount: 25, spread: 50});
             } else {
                 fb.classList.add('bg-red-100', 'text-red-800');
-                fb.innerHTML = `❌ Falsch. Die richtige Formel ist ${formulaCurr.correct}`;
-                btn.classList.add('border-red-500', 'bg-red-50');
+                fb.textContent = '❌ Falsch. Richtig: ' + currentFormula.correct;
+                btn.classList.add('wrong');
             }
             
             updateAllDisplays();
             document.getElementById('formula-next').classList.remove('hidden');
         }
 
-        // Ladungsausgleich
+        // ==================== BALANCE ====================
         function nextBalance() {
             document.getElementById('balance-feedback').classList.add('hidden');
             document.getElementById('balance-next').classList.add('hidden');
             
-            const salz = SALZE[Math.floor(Math.random() * SALZE.length)];
-            balanceCurr = {salz, kCorrect: salz.kAnz, aCorrect: salz.aAnz};
-            
+            const salz = randomFrom(SALZE);
             const kEl = ELEMENTS[salz.kation];
             const aEl = ELEMENTS[salz.anion];
+            
+            currentBalance = {
+                salz: salz,
+                kLadung: kEl.ionLadung,
+                aLadung: aEl.ionLadung,
+                kCorrect: salz.kAnz,
+                aCorrect: salz.aAnz
+            };
             
             document.getElementById('balance-compound').textContent = salz.name;
             document.getElementById('balance-cation-ion').textContent = kEl.symbol;
@@ -1216,31 +1086,32 @@
         }
 
         function updateBalanceTotal() {
+            if (!currentBalance) return;
+            
             const kCount = parseInt(document.getElementById('balance-cation-count').value) || 1;
             const aCount = parseInt(document.getElementById('balance-anion-count').value) || 1;
             
-            const kEl = ELEMENTS[balanceCurr.salz.kation];
-            const aEl = ELEMENTS[balanceCurr.salz.anion];
-            
-            const kCharge = kEl.ionLadung * kCount;
-            const aCharge = -aEl.ionLadung * aCount;
+            const kCharge = currentBalance.kLadung * kCount;
+            const aCharge = -currentBalance.aLadung * aCount;
             const total = kCharge + aCharge;
             
             const display = document.getElementById('balance-total');
-            display.textContent = total > 0 ? `+${total}` : total.toString();
-            display.className = `font-bold ${total === 0 ? 'text-green-600' : 'text-red-600'}`;
+            display.textContent = total > 0 ? '+' + total : total.toString();
+            display.className = 'font-bold ' + (total === 0 ? 'text-green-600' : 'text-red-600');
         }
 
         function checkBalance() {
+            if (!currentBalance) return;
+            
             const kCount = parseInt(document.getElementById('balance-cation-count').value) || 1;
             const aCount = parseInt(document.getElementById('balance-anion-count').value) || 1;
             
             const fb = document.getElementById('balance-feedback');
             fb.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'text-green-800', 'text-red-800');
             
-            if(kCount === balanceCurr.kCorrect && aCount === balanceCurr.aCorrect) {
+            if (kCount === currentBalance.kCorrect && aCount === currentBalance.aCorrect) {
                 fb.classList.add('bg-green-100', 'text-green-800');
-                fb.innerHTML = `✅ Perfekt! Das Verhältnis ${kCount}:${aCount} ergibt ${balanceCurr.salz.formel}`;
+                fb.textContent = '✅ Perfekt! ' + kCount + ':' + aCount + ' ergibt ' + currentBalance.salz.formel;
                 state.balanceScore++;
                 addXP(20);
                 confetti({particleCount: 30, spread: 60});
@@ -1248,42 +1119,41 @@
                 document.getElementById('balance-anion-count').disabled = true;
             } else {
                 fb.classList.add('bg-red-100', 'text-red-800');
-                fb.innerHTML = `❌ Die Ladungen gleichen sich nicht aus. Versuche ${balanceCurr.kCorrect}:${balanceCurr.aCorrect}`;
+                fb.textContent = '❌ Nicht ausgeglichen. Richtig: ' + currentBalance.kCorrect + ':' + currentBalance.aCorrect;
             }
             
             updateAllDisplays();
             document.getElementById('balance-next').classList.remove('hidden');
         }
 
-        // Salznamen
+        // ==================== SALTNAME ====================
         function nextSaltname() {
             document.getElementById('saltname-feedback').classList.add('hidden');
             document.getElementById('saltname-next').classList.add('hidden');
             
-            const salz = SALZE[Math.floor(Math.random() * SALZE.length)];
-            saltnameCurr = {correct: salz.name, formel: salz.formel};
+            const salz = randomFrom(SALZE);
+            currentSaltname = {correct: salz.name, formel: salz.formel};
             
             document.getElementById('saltname-formula').textContent = salz.formel;
             
-            const options = document.getElementById('saltname-options');
-            options.innerHTML = '';
-            
-            let choices = [salz.name];
-            const wrongNames = SALZE.filter(s => s.name !== salz.name).map(s => s.name);
-            while(choices.length < 4) {
-                const idx = Math.floor(Math.random() * wrongNames.length);
-                if(!choices.includes(wrongNames[idx])) {
-                    choices.push(wrongNames[idx]);
-                }
+            // Generate options
+            let options = [salz.name];
+            const allNames = SALZE.map(s => s.name);
+            while (options.length < 4) {
+                const rand = randomFrom(allNames);
+                if (!options.includes(rand)) options.push(rand);
             }
-            choices.sort(() => Math.random() - 0.5);
+            options = shuffle(options);
             
-            choices.forEach(choice => {
+            const container = document.getElementById('saltname-options');
+            container.innerHTML = '';
+            
+            options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'saltname-opt bg-white border-2 border-cyan-200 hover:border-cyan-400 p-3 rounded-xl font-bold tap-active transition-all text-left';
-                btn.textContent = choice;
-                btn.onclick = () => checkSaltname(choice, btn);
-                options.appendChild(btn);
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = function() { checkSaltname(opt, this); };
+                container.appendChild(btn);
             });
         }
 
@@ -1291,119 +1161,40 @@
             const fb = document.getElementById('saltname-feedback');
             fb.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'text-green-800', 'text-red-800');
             
-            document.querySelectorAll('.saltname-opt').forEach(b => b.disabled = true);
+            document.querySelectorAll('#saltname-options button').forEach(b => b.disabled = true);
             
-            if(choice === saltnameCurr.correct) {
+            if (choice === currentSaltname.correct) {
                 fb.classList.add('bg-green-100', 'text-green-800');
-                fb.innerHTML = `✅ Richtig! ${saltnameCurr.formel} ist ${saltnameCurr.correct}`;
-                btn.classList.add('border-green-500', 'bg-green-50');
+                fb.textContent = '✅ Richtig! ' + currentSaltname.formel + ' = ' + currentSaltname.correct;
+                btn.classList.add('correct');
                 state.saltnameScore++;
                 addXP(10);
             } else {
                 fb.classList.add('bg-red-100', 'text-red-800');
-                fb.innerHTML = `❌ Falsch. ${saltnameCurr.formel} heißt ${saltnameCurr.correct}`;
-                btn.classList.add('border-red-500', 'bg-red-50');
+                fb.textContent = '❌ Falsch. Richtig: ' + currentSaltname.correct;
+                btn.classList.add('wrong');
             }
             
             updateAllDisplays();
             document.getElementById('saltname-next').classList.remove('hidden');
         }
 
-        // ==================== CHALLENGE ====================
-        let mysteryCurr = {};
-        let blitzActive = false;
-        let blitzTimer = null;
-        let blitzScore = 0;
-        let blitzTime = 30;
-
-        function initChallenge() {
-            nextMystery();
-        }
-
-        // Mystery Ion
-        const MYSTERY_IONS = [
-            {symbol: 'Na⁺', hints: ['Alkalimetall', 'Hat 1 Außenelektron als Atom', 'Wichtig für Speisesalz']},
-            {symbol: 'Cl⁻', hints: ['Halogen', 'Hat 7 Außenelektronen als Atom', 'Bildet mit Natrium Kochsalz']},
-            {symbol: 'Mg²⁺', hints: ['Erdalkalimetall', 'Hat 2 Außenelektronen als Atom', 'Wichtig für Knochen']},
-            {symbol: 'O²⁻', hints: ['Bildet Oxide', 'Hat 6 Außenelektronen als Atom', 'Zweiwertig negativ']},
-            {symbol: 'Ca²⁺', hints: ['Erdalkalimetall', 'Wichtig für Knochen und Zähne', 'Ladung +2']},
-            {symbol: 'Al³⁺', hints: ['Dreiwertig positiv', 'Leichtmetall', 'Hat 3 Außenelektronen als Atom']},
-            {symbol: 'K⁺', hints: ['Alkalimetall', 'Einwertig positiv', 'Wichtig für Nerven']},
-            {symbol: 'S²⁻', hints: ['Hat 6 Außenelektronen als Atom', 'Bildet Sulfide', 'Zweiwertig negativ']}
-        ];
-
-        function nextMystery() {
-            document.getElementById('mystery-feedback').classList.add('hidden');
-            document.getElementById('mystery-next').classList.add('hidden');
-            
-            const ion = MYSTERY_IONS[Math.floor(Math.random() * MYSTERY_IONS.length)];
-            mysteryCurr = {correct: ion.symbol};
-            
-            const hintsContainer = document.getElementById('mystery-hints');
-            hintsContainer.innerHTML = ion.hints.map((h, i) => 
-                `<div class="bg-white p-2 rounded-lg">🔹 Hinweis ${i+1}: ${h}</div>`
-            ).join('');
-            
-            const options = document.getElementById('mystery-options');
-            options.innerHTML = '';
-            
-            let choices = [ion.symbol];
-            while(choices.length < 6) {
-                const randIon = MYSTERY_IONS[Math.floor(Math.random() * MYSTERY_IONS.length)];
-                if(!choices.includes(randIon.symbol)) {
-                    choices.push(randIon.symbol);
-                }
-            }
-            choices.sort(() => Math.random() - 0.5);
-            
-            choices.forEach(choice => {
-                const btn = document.createElement('button');
-                btn.className = 'mystery-opt bg-white border-2 border-purple-200 hover:border-purple-400 p-2 rounded-lg font-bold tap-active transition-all';
-                btn.textContent = choice;
-                btn.onclick = () => checkMystery(choice, btn);
-                options.appendChild(btn);
-            });
-        }
-
-        function checkMystery(choice, btn) {
-            const fb = document.getElementById('mystery-feedback');
-            fb.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'text-green-800', 'text-red-800');
-            
-            document.querySelectorAll('.mystery-opt').forEach(b => b.disabled = true);
-            
-            if(choice === mysteryCurr.correct) {
-                fb.classList.add('bg-green-100', 'text-green-800');
-                fb.innerHTML = `✅ Richtig! Es war ${mysteryCurr.correct}`;
-                btn.classList.add('border-green-500', 'bg-green-50');
-                state.mysteryScore++;
-                addXP(25);
-                confetti({particleCount: 40, spread: 70});
-            } else {
-                fb.classList.add('bg-red-100', 'text-red-800');
-                fb.innerHTML = `❌ Falsch. Es war ${mysteryCurr.correct}`;
-                btn.classList.add('border-red-500', 'bg-red-50');
-            }
-            
-            updateAllDisplays();
-            document.getElementById('mystery-next').classList.remove('hidden');
-        }
-
-        // Blitzrunde
+        // ==================== BLITZ ====================
         const BLITZ_QUESTIONS = [
-            {q: 'Außenelektronen von Na?', a: '1', options: ['1', '2', '7', '8']},
-            {q: 'Außenelektronen von Cl?', a: '7', options: ['1', '5', '7', '8']},
-            {q: 'Ladung von Na-Ion?', a: '+1', options: ['+1', '+2', '-1', '-2']},
-            {q: 'Ladung von O-Ion?', a: '-2', options: ['+2', '-1', '-2', '-3']},
-            {q: 'Na wird zum...?', a: 'Kation', options: ['Kation', 'Anion']},
-            {q: 'Cl wird zum...?', a: 'Anion', options: ['Kation', 'Anion']},
-            {q: 'Formel: Na + Cl?', a: 'NaCl', options: ['NaCl', 'Na₂Cl', 'NaCl₂']},
-            {q: 'Mg-Ion hat Ladung...?', a: '+2', options: ['+1', '+2', '+3', '-2']},
-            {q: 'Oktettregel: wie viele e⁻?', a: '8', options: ['2', '6', '8', '10']},
-            {q: 'Ca wird zum...?', a: 'Kation', options: ['Kation', 'Anion']},
-            {q: 'F wird zum...?', a: 'Anion', options: ['Kation', 'Anion']},
-            {q: 'Außenelektronen von Mg?', a: '2', options: ['1', '2', '3', '6']},
-            {q: 'Formel: Mg + O?', a: 'MgO', options: ['MgO', 'Mg₂O', 'MgO₂']},
-            {q: 'Al-Ion hat Ladung...?', a: '+3', options: ['+1', '+2', '+3', '-3']}
+            {q: 'Außenelektronen von Na?', a: '1', opts: ['1', '2', '7', '8']},
+            {q: 'Außenelektronen von Cl?', a: '7', opts: ['1', '5', '7', '8']},
+            {q: 'Ladung von Na-Ion?', a: '+1', opts: ['+1', '+2', '-1', '-2']},
+            {q: 'Ladung von O-Ion?', a: '-2', opts: ['+2', '-1', '-2', '-3']},
+            {q: 'Na wird zum...?', a: 'Kation', opts: ['Kation', 'Anion']},
+            {q: 'Cl wird zum...?', a: 'Anion', opts: ['Kation', 'Anion']},
+            {q: 'Formel: Na + Cl?', a: 'NaCl', opts: ['NaCl', 'Na₂Cl', 'NaCl₂']},
+            {q: 'Mg-Ion hat Ladung...?', a: '+2', opts: ['+1', '+2', '+3', '-2']},
+            {q: 'Oktettregel: wie viele e⁻?', a: '8', opts: ['2', '6', '8', '10']},
+            {q: 'Ca wird zum...?', a: 'Kation', opts: ['Kation', 'Anion']},
+            {q: 'Außenelektronen von Mg?', a: '2', opts: ['1', '2', '3', '6']},
+            {q: 'Formel: Mg + O?', a: 'MgO', opts: ['MgO', 'Mg₂O', 'MgO₂']},
+            {q: 'Al-Ion hat Ladung...?', a: '+3', opts: ['+1', '+2', '+3', '-3']},
+            {q: 'Außenelektronen von O?', a: '6', opts: ['2', '4', '6', '8']}
         ];
 
         function startBlitz() {
@@ -1413,88 +1204,81 @@
             
             document.getElementById('blitz-score').textContent = '0 Punkte';
             document.getElementById('blitz-timer').textContent = '30s';
-            document.getElementById('blitz-start').classList.add('hidden');
+            document.getElementById('blitz-result').classList.add('hidden');
             
             nextBlitzQuestion();
             
-            blitzTimer = setInterval(() => {
+            blitzTimer = setInterval(function() {
                 blitzTime--;
                 document.getElementById('blitz-timer').textContent = blitzTime + 's';
                 
-                if(blitzTime <= 0) {
+                if (blitzTime <= 0) {
                     endBlitz();
                 }
             }, 1000);
         }
 
         function nextBlitzQuestion() {
-            if(!blitzActive) return;
+            if (!blitzActive) return;
             
-            const q = BLITZ_QUESTIONS[Math.floor(Math.random() * BLITZ_QUESTIONS.length)];
-            
+            const q = randomFrom(BLITZ_QUESTIONS);
             document.getElementById('blitz-question').textContent = q.q;
-            document.getElementById('blitz-feedback').classList.add('hidden');
             
-            const options = document.getElementById('blitz-options');
-            options.innerHTML = '';
+            const container = document.getElementById('blitz-options');
+            container.innerHTML = '';
             
-            const shuffled = [...q.options].sort(() => Math.random() - 0.5);
-            shuffled.forEach(opt => {
+            shuffle(q.opts).forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'blitz-opt bg-orange-100 border-2 border-orange-300 hover:border-orange-500 p-3 rounded-lg font-bold tap-active transition-all';
+                btn.className = 'bg-orange-100 border-2 border-orange-300 hover:border-orange-500 p-3 rounded-lg font-bold tap-active';
                 btn.textContent = opt;
-                btn.onclick = () => checkBlitz(opt, q.a);
-                options.appendChild(btn);
+                btn.onclick = function() { checkBlitz(opt, q.a); };
+                container.appendChild(btn);
             });
         }
 
         function checkBlitz(choice, correct) {
-            if(!blitzActive) return;
+            if (!blitzActive) return;
             
-            const fb = document.getElementById('blitz-feedback');
-            fb.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'text-green-800', 'text-red-800');
-            
-            if(choice === correct) {
-                fb.classList.add('bg-green-100', 'text-green-800');
-                fb.textContent = '✅';
+            if (choice === correct) {
                 blitzScore++;
                 document.getElementById('blitz-score').textContent = blitzScore + ' Punkte';
-            } else {
-                fb.classList.add('bg-red-100', 'text-red-800');
-                fb.textContent = '❌';
             }
             
-            setTimeout(nextBlitzQuestion, 300);
+            setTimeout(nextBlitzQuestion, 200);
         }
 
         function endBlitz() {
             blitzActive = false;
             clearInterval(blitzTimer);
             
-            document.getElementById('blitz-question').textContent = `Zeit vorbei! ${blitzScore} Punkte!`;
-            document.getElementById('blitz-options').innerHTML = `<button onclick="startBlitz()" class="col-span-2 bg-orange-500 text-white py-3 rounded-lg font-bold tap-active text-lg">🔄 Nochmal!</button>`;
+            document.getElementById('blitz-question').textContent = 'Zeit vorbei!';
+            document.getElementById('blitz-options').innerHTML = '<button onclick="startBlitz()" class="col-span-2 bg-orange-500 text-white py-3 rounded-lg font-bold tap-active text-lg">🔄 Nochmal!</button>';
             
-            if(blitzScore > state.blitzHighscore) {
+            const result = document.getElementById('blitz-result');
+            result.classList.remove('hidden');
+            result.className = 'p-4 rounded-lg text-center bg-orange-100 text-orange-800';
+            result.innerHTML = '<div class="text-2xl font-bold">' + blitzScore + ' Punkte!</div>';
+            
+            if (blitzScore > state.blitzHighscore) {
                 state.blitzHighscore = blitzScore;
-                showToast(`🏆 Neuer Highscore: ${blitzScore}!`);
-                addXP(blitzScore * 2);
-            } else {
-                addXP(blitzScore);
+                result.innerHTML += '<div class="text-sm mt-1">🏆 Neuer Highscore!</div>';
+                confetti({particleCount: 50, spread: 80});
             }
             
+            addXP(blitzScore);
             updateAllDisplays();
         }
 
+        // ==================== RESET ====================
         function resetProgress() {
-            if(confirm('Wirklich alles zurücksetzen?')) {
+            if (confirm('Wirklich alles zurücksetzen?')) {
                 localStorage.removeItem('ionenMasterState');
                 state = {
-                    totalXP: 0, valenceScore: 0, ionTypeScore: 0, chargeScore: 0,
-                    notationScore: 0, formulaScore: 0, balanceScore: 0, saltnameScore: 0,
-                    mysteryScore: 0, blitzHighscore: 0, oktetScore: 0
+                    totalXP: 0, valenceScore: 0, oktetScore: 0, ionTypeScore: 0,
+                    chargeScore: 0, notationScore: 0, formulaScore: 0, balanceScore: 0,
+                    saltnameScore: 0, blitzHighscore: 0
                 };
                 updateAllDisplays();
-                showToast('Fortschritt zurückgesetzt');
             }
         }
     </script>
